@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+
+    <constant name="struts.devMode" value="true" />
+
+    <package name="default" extends="struts-default" namespace="/api">
+        <result-types>
+            <result-type name="json" class="org.apache.struts2.json.JSONResult"/>
+        </result-types>
+        <interceptors>
+            <interceptor name="json" class="org.apache.struts2.json.JSONInterceptor"/>
+            <interceptor name="auth" class="interceptor.AuthInterceptor" />
+            <interceptor-stack name="myStack">
+                <interceptor-ref name="json"></interceptor-ref>
+                <interceptor-ref name="auth"></interceptor-ref>
+                <interceptor-ref name="defaultStack"></interceptor-ref>
+            </interceptor-stack>
+        </interceptors>
+
+        <default-interceptor-ref name="myStack"></default-interceptor-ref>
+        <global-results>
+            <result name="noAuthorized" type="json">
+                <param name="root">responseData</param>
+            </result>
+            <result name="noPermission" type="json">
+                <param name="root">responseData</param>
+            </result>
+        </global-results>
+
+        <action name="get_user_list" class="action.api.UserAction" method="getList">
+            <result name="json" type="json">
+                <param name="root">responseData</param>
+            </result>
+        </action>
+    </package>
+
+</struts>
